@@ -1,0 +1,412 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Document Upload</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'gradient-x': 'gradient-x 15s ease infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        'gradient-x': {
+                            '0%, 100%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'left center'
+                            },
+                            '50%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'right center'
+                            },
+                        },
+                        'float': {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 animate-gradient-x">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.1"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
+    
+    <div class="relative min-h-screen flex items-center justify-center p-4">
+        <!-- Main Container -->
+        <div class="w-full max-w-4xl bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-violet-600 to-purple-600 p-8 text-center">
+                <div class="animate-float">
+                    <svg class="mx-auto h-16 w-16 text-white mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <h1 class="text-3xl font-bold text-white">Employee Document Upload</h1>
+                <p class="text-purple-100 mt-2">Please fill in all required information and upload necessary documents</p>
+            </div>
+
+            <!-- Important Notes Section -->
+            <div class="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 backdrop-blur-sm border-l-4 border-yellow-400 p-6 m-8 rounded-xl">
+                <div class="flex items-start">
+                    <svg class="w-6 h-6 text-yellow-300 mr-3 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                    </svg>
+                    <div>
+                        <h3 class="text-lg font-semibold text-yellow-300 mb-2">Important Guidelines</h3>
+                        <ul class="text-yellow-100 text-sm space-y-2">
+                            <li class="flex items-start">
+                                <span class="w-2 h-2 bg-yellow-300 rounded-full mr-3 mt-2 flex-shrink-0"></span>
+                                All fields marked with (*) are required and must be filled
+                            </li>
+                            <li class="flex items-start">
+                                <span class="w-2 h-2 bg-yellow-300 rounded-full mr-3 mt-2 flex-shrink-0"></span>
+                                Upload only <strong>PNG or JPG</strong> image files (PDF not supported)
+                            </li>
+                            <li class="flex items-start">
+                                <span class="w-2 h-2 bg-yellow-300 rounded-full mr-3 mt-2 flex-shrink-0"></span>
+                                Maximum file size: <strong>1MB per file</strong>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="w-2 h-2 bg-yellow-300 rounded-full mr-3 mt-2 flex-shrink-0"></span>
+                                Experience documents can be: <strong>Release letter, Experience letter, Offer letter, or Payslip</strong>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <form id="uploadForm" class="p-8 space-y-6">
+                <!-- Employee Information -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Employee Name -->
+                    <div class="space-y-2">
+                        <label class="text-white font-medium flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                            </svg>
+                            Employee Name *
+                        </label>
+                        <input type="text" name="employeeName" required class="w-full px-4 py-3 bg-white/10 backdrop-blur border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300" placeholder="Enter full name">
+                        <div class="error-message hidden text-red-300 text-sm mt-1"></div>
+                    </div>
+
+                    <!-- Employee Number -->
+                    <div class="space-y-2">
+                        <label class="text-white font-medium flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+                            </svg>
+                            Employee Number *
+                        </label>
+                        <input type="text" name="employeeNumber" required class="w-full px-4 py-3 bg-white/10 backdrop-blur border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300" placeholder="Enter employee number">
+                        <div class="error-message hidden text-red-300 text-sm mt-1"></div>
+                    </div>
+
+                    <!-- Email ID -->
+                    <div class="space-y-2">
+                        <label class="text-white font-medium flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                            </svg>
+                            Email ID *
+                        </label>
+                        <input type="email" name="emailId" required class="w-full px-4 py-3 bg-white/10 backdrop-blur border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300" placeholder="Enter email address">
+                        <div class="error-message hidden text-red-300 text-sm mt-1"></div>
+                    </div>
+
+                    <!-- Employee Code -->
+                    <div class="space-y-2">
+                        <label class="text-white font-medium flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                            </svg>
+                            Employee Code
+                        </label>
+                        <input type="text" name="employeeCode" class="w-full px-4 py-3 bg-white/10 backdrop-blur border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300" placeholder="Enter employee code">
+                    </div>
+                </div>
+
+                <!-- Document Upload Section -->
+                <div class="bg-white/5 rounded-2xl p-6 border border-white/10">
+                    <h3 class="text-xl font-semibold text-white mb-6 flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        Document Uploads
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Aadhaar Front -->
+                        <div class="file-upload-container">
+                            <label class="text-white font-medium block mb-2">Aadhaar (Front) *</label>
+                            <div class="relative">
+                                <input type="file" name="aadhaarFront" accept=".jpg,.jpeg,.png" required class="hidden" id="aadhaarFront">
+                                <label for="aadhaarFront" class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/30 rounded-xl cursor-pointer bg-white/5 hover:bg-white/10 transition-all duration-300">
+                                    <svg class="w-8 h-8 text-white/60 mb-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <span class="text-white/60 text-sm">Click to upload Aadhaar Front</span>
+                                </label>
+                                <div class="file-name text-xs text-white/80 mt-1 hidden"></div>
+                                <div class="error-message hidden text-red-300 text-sm mt-1"></div>
+                            </div>
+                        </div>
+
+                        <!-- Aadhaar Back -->
+                        <div class="file-upload-container">
+                            <label class="text-white font-medium block mb-2">Aadhaar (Back) *</label>
+                            <div class="relative">
+                                <input type="file" name="aadhaarBack" accept=".jpg,.jpeg,.png" required class="hidden" id="aadhaarBack">
+                                <label for="aadhaarBack" class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/30 rounded-xl cursor-pointer bg-white/5 hover:bg-white/10 transition-all duration-300">
+                                    <svg class="w-8 h-8 text-white/60 mb-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <span class="text-white/60 text-sm">Click to upload Aadhaar Back</span>
+                                </label>
+                                <div class="file-name text-xs text-white/80 mt-1 hidden"></div>
+                                <div class="error-message hidden text-red-300 text-sm mt-1"></div>
+                            </div>
+                        </div>
+
+                        <!-- PAN -->
+                        <div class="file-upload-container">
+                            <label class="text-white font-medium block mb-2">PAN Card *</label>
+                            <div class="relative">
+                                <input type="file" name="panCard" accept=".jpg,.jpeg,.png" required class="hidden" id="panCard">
+                                <label for="panCard" class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/30 rounded-xl cursor-pointer bg-white/5 hover:bg-white/10 transition-all duration-300">
+                                    <svg class="w-8 h-8 text-white/60 mb-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <span class="text-white/60 text-sm">Click to upload PAN Card</span>
+                                </label>
+                                <div class="file-name text-xs text-white/80 mt-1 hidden"></div>
+                                <div class="error-message hidden text-red-300 text-sm mt-1"></div>
+                            </div>
+                        </div>
+
+                        <!-- Last Education -->
+                        <div class="file-upload-container">
+                            <label class="text-white font-medium block mb-2">Last Education Certificate *</label>
+                            <div class="relative">
+                                <input type="file" name="lastEducation" accept=".jpg,.jpeg,.png" required class="hidden" id="lastEducation">
+                                <label for="lastEducation" class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/30 rounded-xl cursor-pointer bg-white/5 hover:bg-white/10 transition-all duration-300">
+                                    <svg class="w-8 h-8 text-white/60 mb-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <span class="text-white/60 text-sm">Click to upload Education Certificate</span>
+                                </label>
+                                <div class="file-name text-xs text-white/80 mt-1 hidden"></div>
+                                <div class="error-message hidden text-red-300 text-sm mt-1"></div>
+                            </div>
+                        </div>
+
+                        <!-- Education -->
+                        <div class="file-upload-container">
+                            <label class="text-white font-medium block mb-2">Education Documents *</label>
+                            <div class="relative">
+                                <input type="file" name="education" accept=".jpg,.jpeg,.png" required class="hidden" id="education" multiple>
+                                <label for="education" class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/30 rounded-xl cursor-pointer bg-white/5 hover:bg-white/10 transition-all duration-300">
+                                    <svg class="w-8 h-8 text-white/60 mb-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <span class="text-white/60 text-sm">Click to upload Education Documents</span>
+                                </label>
+                                <div class="file-name text-xs text-white/80 mt-1 hidden"></div>
+                                <div class="error-message hidden text-red-300 text-sm mt-1"></div>
+                            </div>
+                        </div>
+
+                        <!-- Experience -->
+                        <div class="file-upload-container">
+                            <label class="text-white font-medium block mb-2">Experience Documents *</label>
+                            <div class="relative">
+                                <input type="file" name="experience" accept=".jpg,.jpeg,.png" required class="hidden" id="experience" multiple>
+                                <label for="experience" class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/30 rounded-xl cursor-pointer bg-white/5 hover:bg-white/10 transition-all duration-300">
+                                    <svg class="w-8 h-8 text-white/60 mb-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <span class="text-white/60 text-sm">Click to upload Experience Documents</span>
+                                </label>
+                                <div class="file-name text-xs text-white/80 mt-1 hidden"></div>
+                                <div class="error-message hidden text-red-300 text-sm mt-1"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Remarks -->
+                <div class="space-y-2">
+                    <label class="text-white font-medium flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 13V5a2 2 0 00-2-2H4a2 2 0 00-2 2v8a2 2 0 002 2h3l3 3 3-3h3a2 2 0 002-2zM5 7a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1zm1 3a1 1 0 100 2h3a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                        </svg>
+                        Remarks
+                    </label>
+                    <textarea name="remarks" rows="4" class="w-full px-4 py-3 bg-white/10 backdrop-blur border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 resize-none" placeholder="Enter any additional remarks or notes..."></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-center pt-6">
+                    <button type="submit" class="group relative px-8 py-4 bg-gradient-to-r from-purple-600 to-violet-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-purple-500/50">
+                        <span class="flex items-center">
+                            <svg class="w-5 h-5 mr-2 group-hover:animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.293l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                            Upload Documents
+                        </span>
+                        <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-300"></div>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Loading Overlay -->
+            <div id="loadingOverlay" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+                <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-center border border-white/20">
+                    <div class="animate-spin rounded-full h-12 w-12 border-4 border-purple-500 border-t-transparent mx-auto mb-4"></div>
+                    <p class="text-white font-medium">Uploading documents...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="messageContainer" class="fixed top-4 right-4 z-50"></div>
+
+    <script>
+        const API_BASE_URL = 'https://api.netlifycon-hr.in/api/v1/';
+        
+        // File upload preview functionality
+        document.querySelectorAll('input[type="file"]').forEach(input => {
+            input.addEventListener('change', function(e) {
+                const container = this.closest('.file-upload-container');
+                const fileNameDiv = container.querySelector('.file-name');
+                const label = container.querySelector('label[for="' + this.id + '"]');
+                
+                if (this.files && this.files.length > 0) {
+                    const fileNames = Array.from(this.files).map(file => file.name).join(', ');
+                    fileNameDiv.textContent = fileNames;
+                    fileNameDiv.classList.remove('hidden');
+                    label.classList.add('border-purple-400', 'bg-purple-500/20');
+                } else {
+                    fileNameDiv.classList.add('hidden');
+                    label.classList.remove('border-purple-400', 'bg-purple-500/20');
+                }
+            });
+        });
+
+        // Form submission
+        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.classList.remove('hidden');
+            
+            try {
+                const formData = new FormData();
+                
+                // Add text fields
+                const textFields = ['employeeName', 'employeeNumber', 'emailId', 'employeeCode', 'remarks'];
+                textFields.forEach(field => {
+                    const value = this.querySelector(`[name="${field}"]`).value;
+                    if (value) formData.append(field, value);
+                });
+                
+                // Add file fields
+                const fileFields = ['aadhaarFront', 'aadhaarBack', 'panCard', 'lastEducation', 'education', 'experience'];
+                fileFields.forEach(field => {
+                    const fileInput = this.querySelector(`[name="${field}"]`);
+                    if (fileInput.files && fileInput.files.length > 0) {
+                        if (fileInput.multiple) {
+                            for (let file of fileInput.files) {
+                                formData.append(field, file);
+                            }
+                        } else {
+                            formData.append(field, fileInput.files[0]);
+                        }
+                    }
+                });
+                
+                // Submit to API
+                const response = await axios.post(`${API_BASE_URL}employee/upload`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                    timeout: 30000 // 30 second timeout
+                });
+                
+                showMessage('Documents uploaded successfully!', 'success');
+                this.reset();
+                
+                // Reset file previews
+                document.querySelectorAll('.file-name').forEach(div => {
+                    div.classList.add('hidden');
+                });
+                document.querySelectorAll('label[for]').forEach(label => {
+                    label.classList.remove('border-purple-400', 'bg-purple-500/20');
+                });
+                
+            } catch (error) {
+                console.error('Upload error:', error);
+                let errorMessage = 'Failed to upload documents. Please try again.';
+                
+                if (error.response) {
+                    errorMessage = error.response.data?.message || errorMessage;
+                } else if (error.request) {
+                    errorMessage = 'Network error. Please check your connection.';
+                }
+                
+                showMessage(errorMessage, 'error');
+            } finally {
+                loadingOverlay.classList.add('hidden');
+            }
+        });
+
+        function showMessage(message, type) {
+            const container = document.getElementById('messageContainer');
+            const messageDiv = document.createElement('div');
+            
+            const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
+            const icon = type === 'success' ? 
+                '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>' :
+                '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>';
+            
+            messageDiv.className = `${bgColor} text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 mb-4 transform translate-x-full transition-transform duration-300`;
+            messageDiv.innerHTML = `
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    ${icon}
+                </svg>
+                <span>${message}</span>
+                <button onclick="this.parentElement.remove()" class="ml-4 text-white/80 hover:text-white">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+            `;
+            
+            container.appendChild(messageDiv);
+            
+            // Animate in
+            setTimeout(() => {
+                messageDiv.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (messageDiv.parentElement) {
+                    messageDiv.classList.add('translate-x-full');
+                    setTimeout(() => messageDiv.remove(), 300);
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
