@@ -652,7 +652,7 @@
       if (!userId) {
         errorPage.classList.remove("hidden");
       } else {
-         axios.post(`https://api.netlifycon-hr.in/api/v1/generated-link/generate-background-verification-url/${userId}`).then(res=>{
+         axios.get(`https://api.netlifycon-hr.in/api/v1/generated-link/verify-bg-url/${userId}`).then(res=>{
         mainForm.classList.remove("hidden");
 
           }).catch(()=>{
